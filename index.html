@@ -7,175 +7,393 @@
 
   <style>
     body { font-family: Arial, sans-serif; background: #f6f6f6; margin: 0; padding: 20px; }
-    .container { max-width: 800px; margin: auto; }
-    h1 { text-align: center; }
-    .card { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-    .menu-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+    .container { max-width: 900px; margin: auto; }
+    h1 { text-align: center; margin: 10px 0 18px; }
+
+    .grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1.1fr 0.9fr; } }
+
+    .card { background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #e9e9e9; }
+    .menu-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; gap: 12px; }
+    .menu-item:last-child { border-bottom: none; }
     .qty { display: flex; align-items: center; gap: 8px; }
-    .qty button { width: 32px; height: 32px; cursor: pointer; }
-    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px; }
-    .checkout { background: #25D366; color: #fff; border: none; padding: 15px; width: 100%; font-size: 16px; border-radius: 6px; cursor: pointer; }
+    .qty button { width: 34px; height: 34px; cursor: pointer; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-size: 18px; }
+    input, select, textarea { width: 100%; padding: 9px; margin-top: 6px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; }
+    textarea { min-height: 70px; resize: vertical; }
+
+    .checkout { background: #25D366; color: #fff; border: none; padding: 15px; width: 100%; font-size: 16px; border-radius: 10px; cursor: pointer; font-weight: 700; }
+    .ghost { background: #fff; border: 1px solid #ddd; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: 700; }
+
     .total { font-weight: bold; margin-top: 10px; }
     .note { font-size: 13px; color: #555; margin-top: 8px; }
+    .muted { color: #666; font-size: 13px; }
+
+    .kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .kpi .box { background: #fafafa; border: 1px solid #eee; border-radius: 10px; padding: 12px; }
+    .kpi .label { font-size: 12px; color: #666; margin-bottom: 4px; }
+    .kpi .value { font-size: 18px; font-weight: 800; }
+
+    .history { max-height: 320px; overflow: auto; border: 1px solid #eee; border-radius: 10px; padding: 10px; background: #fff; }
+    .order-row { border-bottom: 1px dashed #eee; padding: 10px 6px; }
+    .order-row:last-child { border-bottom: none; }
+    .order-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .order-id { font-weight: 800; }
+    .order-meta { color: #666; font-size: 12px; }
+    .order-items { margin-top: 6px; font-size: 13px; color: #222; white-space: pre-wrap; }
+    .order-total { margin-top: 6px; font-weight: 800; }
   </style>
 </head>
 
 <body>
 <div class="container">
+  <h1>🍔 Takeaway Orders</h1>
 
-<h1>🍔 Takeaway Orders</h1>
+  <div class="grid">
+    <!-- LEFT: MENU -->
+    <div>
+      <div class="card">
+        <h3>Menu</h3>
 
-<div class="card">
-  <h3>Menu</h3>
+        <div class="menu-item">
+          <div>
+            <div><b>Wings (6 pcs)</b></div>
+            <div class="muted">R45</div>
+          </div>
+          <div class="qty">
+            <button type="button" onclick="updateQty('Wings (6 pcs)', 45, -1)">−</button>
+            <span id="qty-Wings (6 pcs)">0</span>
+            <button type="button" onclick="updateQty('Wings (6 pcs)', 45, 1)">+</button>
+          </div>
+        </div>
 
-  <div class="menu-item">
-    <span>Wings (6 pcs) – R45</span>
-    <div class="qty">
-      <button onclick="updateQty('Wings (6 pcs)', 45, -1)">−</button>
-      <span id="qty-Wings (6 pcs)">0</span>
-      <button onclick="updateQty('Wings (6 pcs)', 45, 1)">+</button>
+        <div class="menu-item">
+          <div>
+            <div><b>Chips (Medium)</b></div>
+            <div class="muted">R30</div>
+          </div>
+          <div class="qty">
+            <button type="button" onclick="updateQty('Chips (Medium)', 30, -1)">−</button>
+            <span id="qty-Chips (Medium)">0</span>
+            <button type="button" onclick="updateQty('Chips (Medium)', 30, 1)">+</button>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div>
+            <div><b>Beef Burger</b></div>
+            <div class="muted">R55</div>
+          </div>
+          <div class="qty">
+            <button type="button" onclick="updateQty('Beef Burger', 55, -1)">−</button>
+            <span id="qty-Beef Burger">0</span>
+            <button type="button" onclick="updateQty('Beef Burger', 55, 1)">+</button>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div>
+            <div><b>Soft Drink</b></div>
+            <div class="muted">R20</div>
+          </div>
+          <div class="qty">
+            <button type="button" onclick="updateQty('Soft Drink', 20, -1)">−</button>
+            <span id="qty-Soft Drink">0</span>
+            <button type="button" onclick="updateQty('Soft Drink', 20, 1)">+</button>
+          </div>
+        </div>
+
+        <div class="note">Tip: Add items with +. Your order summary updates on the right.</div>
+      </div>
+
+      <div class="card">
+        <h3>Reporting (On this device)</h3>
+        <div class="kpi">
+          <div class="box">
+            <div class="label">Today’s Orders</div>
+            <div class="value" id="kpiOrders">0</div>
+          </div>
+          <div class="box">
+            <div class="label">Today’s Revenue</div>
+            <div class="value" id="kpiRevenue">R0</div>
+          </div>
+        </div>
+        <div class="note">
+          This history is saved in your browser (localStorage). It won’t sync across devices yet.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Order History</h3>
+        <div class="history" id="historyBox"></div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px;">
+          <button class="ghost" type="button" onclick="clearHistory()">Clear History</button>
+          <button class="ghost" type="button" onclick="resetOrder()">Reset Current Cart</button>
+        </div>
+
+        <div class="note">
+          Clearing history removes saved orders on this device only.
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: CUSTOMER + SUMMARY -->
+    <div>
+      <div class="card">
+        <h3>Customer Details</h3>
+
+        <label>Name</label>
+        <input id="name" placeholder="Your Name" />
+
+        <label>Phone (optional)</label>
+        <input id="phone" placeholder="Your Phone (optional)" />
+
+        <label>Order Type</label>
+        <select id="orderType" onchange="toggleDelivery()">
+          <option value="Collection">Collection</option>
+          <option value="Delivery">Delivery</option>
+        </select>
+
+        <div id="deliveryWrap" style="display:none;">
+          <label>Delivery Address</label>
+          <input id="address" placeholder="Delivery Address" />
+        </div>
+
+        <label>Notes (optional)</label>
+        <textarea id="notes" placeholder="Notes (optional)"></textarea>
+      </div>
+
+      <div class="card">
+        <h3>Order Summary</h3>
+        <div id="summary"></div>
+        <div class="total" id="total"></div>
+
+        <button class="checkout" type="button" onclick="sendWhatsApp()">Place Order via WhatsApp</button>
+
+        <div class="note">Orders go to <strong>+27 78 969 1760</strong></div>
+      </div>
     </div>
   </div>
-
-  <div class="menu-item">
-    <span>Chips (Medium) – R30</span>
-    <div class="qty">
-      <button onclick="updateQty('Chips (Medium)', 30, -1)">−</button>
-      <span id="qty-Chips (Medium)">0</span>
-      <button onclick="updateQty('Chips (Medium)', 30, 1)">+</button>
-    </div>
-  </div>
-
-  <div class="menu-item">
-    <span>Beef Burger – R55</span>
-    <div class="qty">
-      <button onclick="updateQty('Beef Burger', 55, -1)">−</button>
-      <span id="qty-Beef Burger">0</span>
-      <button onclick="updateQty('Beef Burger', 55, 1)">+</button>
-    </div>
-  </div>
-
-  <div class="menu-item">
-    <span>Soft Drink – R20</span>
-    <div class="qty">
-      <button onclick="updateQty('Soft Drink', 20, -1)">−</button>
-      <span id="qty-Soft Drink">0</span>
-      <button onclick="updateQty('Soft Drink', 20, 1)">+</button>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <h3>Customer Details</h3>
-
-  <input id="name" placeholder="Your Name" />
-  <input id="phone" placeholder="Your Phone (optional)" />
-
-  <select id="orderType" onchange="toggleDelivery()">
-    <option value="Collection">Collection</option>
-    <option value="Delivery">Delivery</option>
-  </select>
-
-  <input id="address" placeholder="Delivery Address" style="display:none;" />
-  <textarea id="notes" placeholder="Notes (optional)"></textarea>
-</div>
-
-<div class="card">
-  <h3>Order Summary</h3>
-  <div id="summary"></div>
-  <div class="total" id="total"></div>
-
-  <button class="checkout" onclick="sendWhatsApp()">Place Order via WhatsApp</button>
-
-  <div class="note">Orders go to <strong>+27 78 969 1760</strong></div>
-</div>
-
 </div>
 
 <script>
-  const BUSINESS_PHONE = "27789691760";
-  const cart = {};
+  // ===== CONFIG =====
+  const BUSINESS_PHONE = "27789691760"; // ✅ correct number (no +)
+  const HISTORY_KEY = "takeaway_order_history_v1";
+  // ==================
+
+  const cart = {}; // { itemName: { price, qty } }
+
+  function toggleDelivery() {
+    const type = document.getElementById("orderType").value;
+    document.getElementById("deliveryWrap").style.display = (type === "Delivery") ? "block" : "none";
+  }
 
   function updateQty(name, price, change) {
     if (!cart[name]) cart[name] = { price, qty: 0 };
     cart[name].qty = Math.max(0, cart[name].qty + change);
     if (cart[name].qty === 0) delete cart[name];
-    document.getElementById(`qty-${name}`).innerText = cart[name]?.qty || 0;
+
+    // Update visible qty
+    const el = document.getElementById(`qty-${name}`);
+    if (el) el.innerText = cart[name]?.qty || 0;
+
     renderSummary();
   }
 
-  function toggleDelivery() {
-    document.getElementById("address").style.display =
-      document.getElementById("orderType").value === "Delivery" ? "block" : "none";
+  function calcTotal() {
+    let t = 0;
+    Object.keys(cart).forEach(item => {
+      t += cart[item].price * cart[item].qty;
+    });
+    return t;
   }
 
   function renderSummary() {
     let html = "";
+    const items = Object.keys(cart);
     let total = 0;
-    Object.keys(cart).forEach(item => {
+
+    items.forEach(item => {
       const line = cart[item].price * cart[item].qty;
       total += line;
       html += `${cart[item].qty} × ${item} – R${line}<br>`;
     });
+
     document.getElementById("summary").innerHTML = html || "<em>No items added</em>";
     document.getElementById("total").innerText = total ? `Total: R${total}` : "";
   }
 
-  function generateDailyOrderId() {
-    const now = new Date();
-    const yyyyMMdd = now.toISOString().slice(0,10).replace(/-/g,"");
-    const key = `order_seq_${yyyyMMdd}`;
-    let seq = Number(localStorage.getItem(key) || 0) + 1;
-    localStorage.setItem(key, seq);
-    return `ORD-${yyyyMMdd}-${seq.toString().padStart(2,"0")}`;
+  // Order ID: ORD-YYYYMMDD-XX (daily sequence per device)
+  function getTodayKey() {
+    // YYYYMMDD from local time (device time)
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}${mm}${dd}`;
   }
 
+  function generateDailyOrderId() {
+    const ymd = getTodayKey();
+    const seqKey = `order_seq_${ymd}`;
+    const next = Number(localStorage.getItem(seqKey) || 0) + 1;
+    localStorage.setItem(seqKey, String(next));
+    return `ORD-${ymd}-${String(next).padStart(2,"0")}`;
+  }
+
+  function getSADateTime() {
+    const now = new Date();
+    // Date and time display in South Africa format
+    const date = now.toLocaleDateString("en-ZA");
+    const time = now.toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" });
+    return { now, date, time };
+  }
+
+  // ===== HISTORY STORAGE =====
+  function loadHistory() {
+    try {
+      return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }
+
+  function addToHistory(order) {
+    const history = loadHistory();
+    history.unshift(order); // latest first
+    saveHistory(history);
+    renderHistoryAndKPIs();
+  }
+
+  function clearHistory() {
+    if (!confirm("Clear order history on this device?")) return;
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistoryAndKPIs();
+  }
+
+  function renderHistoryAndKPIs() {
+    const history = loadHistory();
+    const box = document.getElementById("historyBox");
+
+    if (history.length === 0) {
+      box.innerHTML = `<div class="muted">No saved orders yet (on this device).</div>`;
+    } else {
+      box.innerHTML = history.map(o => {
+        const itemLines = o.items.map(i => `- ${i.qty} x ${i.name} (R${i.lineTotal})`).join("\n");
+        return `
+          <div class="order-row">
+            <div class="order-top">
+              <div class="order-id">${o.orderId}</div>
+              <div class="order-meta">${o.date} ${o.time} • ${o.orderType}</div>
+            </div>
+            <div class="order-items">${itemLines}</div>
+            <div class="order-total">Total: R${o.total}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // KPIs for today only
+    const todayKey = getTodayKey(); // YYYYMMDD
+    const todayOrders = history.filter(o => o.ymd === todayKey);
+    const count = todayOrders.length;
+    const revenue = todayOrders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+
+    document.getElementById("kpiOrders").innerText = String(count);
+    document.getElementById("kpiRevenue").innerText = `R${revenue}`;
+  }
+
+  // ===== SEND ORDER =====
   function sendWhatsApp() {
-    if (Object.keys(cart).length === 0) {
+    const itemsInCart = Object.keys(cart);
+    if (itemsInCart.length === 0) {
       alert("Please add items to your order.");
       return;
     }
 
-    const name = document.getElementById("name").value || "Not provided";
-    const phone = document.getElementById("phone").value;
-    const type = document.getElementById("orderType").value;
-    const address = document.getElementById("address").value;
-    const notes = document.getElementById("notes").value;
+    const name = (document.getElementById("name").value || "Not provided").trim();
+    const phone = document.getElementById("phone").value.trim();
+    const orderType = document.getElementById("orderType").value;
+    const address = document.getElementById("address").value.trim();
+    const notes = document.getElementById("notes").value.trim();
 
-    if (type === "Delivery" && !address) {
+    if (orderType === "Delivery" && !address) {
       alert("Please enter a delivery address.");
       return;
     }
 
-    const now = new Date();
-    const date = now.toLocaleDateString("en-ZA");
-    const time = now.toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" });
+    const { date, time } = getSADateTime();
+    const ymd = getTodayKey();
     const orderId = generateDailyOrderId();
 
+    // Build items array for history + message
+    const items = itemsInCart.map(name => {
+      const qty = cart[name].qty;
+      const price = cart[name].price;
+      const lineTotal = qty * price;
+      return { name, qty, price, lineTotal };
+    });
+
+    const total = calcTotal();
+
+    // Save to on-site history BEFORE redirecting to WhatsApp
+    addToHistory({
+      orderId,
+      ymd,
+      date,
+      time,
+      orderType,
+      customerName: name,
+      customerPhone: phone || "",
+      address: orderType === "Delivery" ? address : "",
+      notes: notes || "",
+      items,
+      total
+    });
+
+    // WhatsApp message
     let msg = `*New Takeaway Order*\n`;
     msg += `Order ID: ${orderId}\n`;
     msg += `Date: ${date}\nTime: ${time}\n\n`;
     msg += `Name: ${name}\n`;
     if (phone) msg += `Customer Phone: ${phone}\n`;
-    msg += `Order Type: ${type}\n`;
-    if (type === "Delivery") msg += `Address: ${address}\n`;
+    msg += `Order Type: ${orderType}\n`;
+    if (orderType === "Delivery") msg += `Address: ${address}\n`;
     if (notes) msg += `Notes: ${notes}\n`;
 
     msg += `\n*Order Details:*\n`;
-    let total = 0;
-    Object.keys(cart).forEach(item => {
-      const line = cart[item].price * cart[item].qty;
-      total += line;
-      msg += `- ${cart[item].qty} x ${item} (R${line})\n`;
+    items.forEach(i => {
+      msg += `- ${i.qty} x ${i.name} (R${i.lineTotal})\n`;
     });
 
     msg += `\nTotal: R${total}`;
 
-    window.location.href =
-      `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(msg)}`;
+    const url = `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(msg)}`;
+    window.location.href = url;
   }
 
+  function resetOrder() {
+    // Clear cart object
+    Object.keys(cart).forEach(k => delete cart[k]);
+
+    // Reset quantities shown
+    document.getElementById("qty-Wings (6 pcs)").innerText = "0";
+    document.getElementById("qty-Chips (Medium)").innerText = "0";
+    document.getElementById("qty-Beef Burger").innerText = "0";
+    document.getElementById("qty-Soft Drink").innerText = "0";
+
+    renderSummary();
+  }
+
+  // Init
   toggleDelivery();
+  renderSummary();
+  renderHistoryAndKPIs();
 </script>
 
 </body>
