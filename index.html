@@ -6,68 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f6f6f6;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-    }
-    .card {
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    .menu-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-    }
-    .qty {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .qty button {
-      width: 32px;
-      height: 32px;
-      cursor: pointer;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-    }
-    .checkout {
-      background: #25D366;
-      color: #fff;
-      border: none;
-      padding: 15px;
-      width: 100%;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .total {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .note {
-      font-size: 13px;
-      color: #555;
-      margin-top: 8px;
-    }
+    body { font-family: Arial, sans-serif; background: #f6f6f6; margin: 0; padding: 20px; }
+    .container { max-width: 800px; margin: auto; }
+    h1 { text-align: center; }
+    .card { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    .menu-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+    .qty { display: flex; align-items: center; gap: 8px; }
+    .qty button { width: 32px; height: 32px; cursor: pointer; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 10px; }
+    .checkout { background: #25D366; color: #fff; border: none; padding: 15px; width: 100%; font-size: 16px; border-radius: 6px; cursor: pointer; }
+    .total { font-weight: bold; margin-top: 10px; }
+    .note { font-size: 13px; color: #555; margin-top: 8px; }
   </style>
 </head>
 
@@ -138,9 +87,7 @@
 
   <button class="checkout" onclick="sendWhatsApp()">Place Order via WhatsApp</button>
 
-  <div class="note">
-    Orders go to <strong>+27 78 969 1760</strong>
-  </div>
+  <div class="note">Orders go to <strong>+27 78 969 1760</strong></div>
 </div>
 
 </div>
@@ -174,9 +121,13 @@
     document.getElementById("total").innerText = total ? `Total: R${total}` : "";
   }
 
-  function generateOrderId(now) {
-    const pad = n => n.toString().padStart(2, "0");
-    return `ORD-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  function generateDailyOrderId() {
+    const now = new Date();
+    const yyyyMMdd = now.toISOString().slice(0,10).replace(/-/g,"");
+    const key = `order_seq_${yyyyMMdd}`;
+    let seq = Number(localStorage.getItem(key) || 0) + 1;
+    localStorage.setItem(key, seq);
+    return `ORD-${yyyyMMdd}-${seq.toString().padStart(2,"0")}`;
   }
 
   function sendWhatsApp() {
@@ -199,7 +150,7 @@
     const now = new Date();
     const date = now.toLocaleDateString("en-ZA");
     const time = now.toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" });
-    const orderId = generateOrderId(now);
+    const orderId = generateDailyOrderId();
 
     let msg = `*New Takeaway Order*\n`;
     msg += `Order ID: ${orderId}\n`;
@@ -220,8 +171,8 @@
 
     msg += `\nTotal: R${total}`;
 
-    const url = `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(msg)}`;
-    window.location.href = url;
+    window.location.href =
+      `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(msg)}`;
   }
 
   toggleDelivery();
