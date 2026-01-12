@@ -6,433 +6,220 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    :root {
-      --bg: #f6f6f6;
-      --card: #ffffff;
-      --text: #111111;
-      --muted: #666666;
-      --accent: #25D366;
-      --border: #e6e6e6;
-    }
-
-    * { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: #f6f6f6;
       margin: 0;
-      padding: 16px;
+      padding: 20px;
     }
-
-    .container { max-width: 900px; margin: 0 auto; }
-
-    h1 { text-align: center; margin: 10px 0 18px; }
-
-    .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 900px) {
-      .grid { grid-template-columns: 1.15fr 0.85fr; align-items: start; }
+    .container {
+      max-width: 800px;
+      margin: auto;
     }
-
+    h1 {
+      text-align: center;
+    }
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
     }
-
-    .card h3 { margin: 0 0 12px; }
-
     .menu-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
       margin-bottom: 10px;
-      background: #fff;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
     }
-    .menu-left { display: flex; flex-direction: column; gap: 4px; }
-    .menu-name { font-weight: 700; }
-    .menu-desc { color: var(--muted); font-size: 13px; }
-    .menu-price { font-weight: 700; }
-
     .qty {
       display: flex;
-      gap: 8px;
       align-items: center;
-      user-select: none;
+      gap: 8px;
     }
     .qty button {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
       cursor: pointer;
-      font-size: 18px;
-      line-height: 0;
     }
-    .qty span {
-      min-width: 20px;
-      text-align: center;
-      font-weight: 700;
-    }
-
-    label { display: block; font-weight: 700; margin: 10px 0 6px; }
     input, select, textarea {
       width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-      background: #fff;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
     }
-    textarea { min-height: 70px; resize: vertical; }
-
-    .row { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    @media (min-width: 700px) {
-      .row.two { grid-template-columns: 1fr 1fr; }
-    }
-
-    .summary {
-      font-size: 14px;
-      line-height: 1.6;
-    }
-    .summary .empty {
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    .totals {
-      margin-top: 12px;
-      border-top: 1px dashed var(--border);
-      padding-top: 10px;
-      font-size: 14px;
-    }
-    .totals .line {
-      display: flex;
-      justify-content: space-between;
-      margin: 6px 0;
-    }
-    .totals .grand {
-      font-weight: 800;
-      font-size: 16px;
-      margin-top: 8px;
-    }
-
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .btn {
+    .checkout {
+      background: #25D366;
+      color: #fff;
       border: none;
-      padding: 14px 12px;
-      border-radius: 10px;
+      padding: 15px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 800;
-      font-size: 15px;
     }
-    .btn-whatsapp { background: var(--accent); color: #fff; }
-    .btn-ghost { background: #fff; border: 1px solid var(--border); color: #111; }
-
-    .hint { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--muted);
-      margin-left: 6px;
+    .total {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .note {
+      font-size: 13px;
+      color: #555;
+      margin-top: 8px;
     }
   </style>
 </head>
 
 <body>
 <div class="container">
-  <h1>🍔 Takeaway Orders <span class="pill">WhatsApp MVP</span></h1>
 
-  <div class="grid">
-    <!-- LEFT: MENU -->
-    <div class="card">
-      <h3>Menu</h3>
+<h1>🍔 Takeaway Orders</h1>
 
-      <div class="menu-item">
-        <div class="menu-left">
-          <div class="menu-name">Wings (6 pcs)</div>
-          <div class="menu-desc">Crispy wings portion</div>
-        </div>
-        <div class="menu-price">R45</div>
-        <div class="qty">
-          <button type="button" onclick="updateQty('Wings (6 pcs)', 45, -1)">−</button>
-          <span id="qty-Wings (6 pcs)">0</span>
-          <button type="button" onclick="updateQty('Wings (6 pcs)', 45, 1)">+</button>
-        </div>
-      </div>
+<div class="card">
+  <h3>Menu</h3>
 
-      <div class="menu-item">
-        <div class="menu-left">
-          <div class="menu-name">Chips (Medium)</div>
-          <div class="menu-desc">Golden chips</div>
-        </div>
-        <div class="menu-price">R30</div>
-        <div class="qty">
-          <button type="button" onclick="updateQty('Chips (Medium)', 30, -1)">−</button>
-          <span id="qty-Chips (Medium)">0</span>
-          <button type="button" onclick="updateQty('Chips (Medium)', 30, 1)">+</button>
-        </div>
-      </div>
-
-      <div class="menu-item">
-        <div class="menu-left">
-          <div class="menu-name">Beef Burger</div>
-          <div class="menu-desc">Classic burger</div>
-        </div>
-        <div class="menu-price">R55</div>
-        <div class="qty">
-          <button type="button" onclick="updateQty('Beef Burger', 55, -1)">−</button>
-          <span id="qty-Beef Burger">0</span>
-          <button type="button" onclick="updateQty('Beef Burger', 55, 1)">+</button>
-        </div>
-      </div>
-
-      <div class="menu-item">
-        <div class="menu-left">
-          <div class="menu-name">Soft Drink</div>
-          <div class="menu-desc">330ml</div>
-        </div>
-        <div class="menu-price">R20</div>
-        <div class="qty">
-          <button type="button" onclick="updateQty('Soft Drink', 20, -1)">−</button>
-          <span id="qty-Soft Drink">0</span>
-          <button type="button" onclick="updateQty('Soft Drink', 20, 1)">+</button>
-        </div>
-      </div>
-
-      <div class="hint">
-        Tip: Add items with +. Your order summary updates on the right.
-      </div>
+  <div class="menu-item">
+    <span>Wings (6 pcs) – R45</span>
+    <div class="qty">
+      <button onclick="updateQty('Wings (6 pcs)', 45, -1)">−</button>
+      <span id="qty-Wings (6 pcs)">0</span>
+      <button onclick="updateQty('Wings (6 pcs)', 45, 1)">+</button>
     </div>
+  </div>
 
-    <!-- RIGHT: CUSTOMER + SUMMARY -->
-    <div>
-      <div class="card">
-        <h3>Customer Details</h3>
+  <div class="menu-item">
+    <span>Chips (Medium) – R30</span>
+    <div class="qty">
+      <button onclick="updateQty('Chips (Medium)', 30, -1)">−</button>
+      <span id="qty-Chips (Medium)">0</span>
+      <button onclick="updateQty('Chips (Medium)', 30, 1)">+</button>
+    </div>
+  </div>
 
-        <div class="row two">
-          <div>
-            <label for="name">Name</label>
-            <input id="name" type="text" placeholder="Your name" />
-          </div>
-          <div>
-            <label for="phone">Phone</label>
-            <input id="phone" type="text" placeholder="Your phone (optional)" />
-          </div>
-        </div>
+  <div class="menu-item">
+    <span>Beef Burger – R55</span>
+    <div class="qty">
+      <button onclick="updateQty('Beef Burger', 55, -1)">−</button>
+      <span id="qty-Beef Burger">0</span>
+      <button onclick="updateQty('Beef Burger', 55, 1)">+</button>
+    </div>
+  </div>
 
-        <label for="orderType">Order Type</label>
-        <select id="orderType" onchange="toggleDeliveryFields()">
-          <option value="Collection">Collection</option>
-          <option value="Delivery">Delivery</option>
-        </select>
-
-        <div id="deliveryFields" style="display:none;">
-          <label for="address">Delivery Address</label>
-          <input id="address" type="text" placeholder="House no, street, suburb" />
-
-          <label for="deliveryFee">Delivery Fee (R)</label>
-          <!-- Set default to 0; change to e.g. 20 if you want -->
-          <input id="deliveryFee" type="number" min="0" step="1" value="0" oninput="renderSummary()" />
-        </div>
-
-        <label for="notes">Notes</label>
-        <textarea id="notes" placeholder="Extra sauce, no spice, etc. (optional)"></textarea>
-
-        <div class="hint">
-          Delivery address is required only if you choose Delivery.
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:12px;">
-        <h3>Order Summary</h3>
-        <div class="summary" id="summary"></div>
-
-        <div class="totals" id="totals"></div>
-
-        <div class="actions">
-          <button class="btn btn-whatsapp" type="button" onclick="placeOrderWhatsApp()">
-            Place Order via WhatsApp
-          </button>
-          <button class="btn btn-ghost" type="button" onclick="resetOrder()">
-            Reset Order
-          </button>
-        </div>
-
-        <div class="hint">
-          Orders go to: <b>+27 78 969 1760</b>
-        </div>
-      </div>
+  <div class="menu-item">
+    <span>Soft Drink – R20</span>
+    <div class="qty">
+      <button onclick="updateQty('Soft Drink', 20, -1)">−</button>
+      <span id="qty-Soft Drink">0</span>
+      <button onclick="updateQty('Soft Drink', 20, 1)">+</button>
     </div>
   </div>
 </div>
 
-<script>
-  // ===== CONFIG =====
-  const BUSINESS_PHONE = "27789691760"; // WhatsApp target number (no +)
-  // ==================
+<div class="card">
+  <h3>Customer Details</h3>
 
-  // Cart structure: { itemName: { price: number, qty: number } }
+  <input id="name" placeholder="Your Name" />
+  <input id="phone" placeholder="Your Phone (optional)" />
+
+  <select id="orderType" onchange="toggleDelivery()">
+    <option value="Collection">Collection</option>
+    <option value="Delivery">Delivery</option>
+  </select>
+
+  <input id="address" placeholder="Delivery Address" style="display:none;" />
+  <textarea id="notes" placeholder="Notes (optional)"></textarea>
+</div>
+
+<div class="card">
+  <h3>Order Summary</h3>
+  <div id="summary"></div>
+  <div class="total" id="total"></div>
+
+  <button class="checkout" onclick="sendWhatsApp()">Place Order via WhatsApp</button>
+
+  <div class="note">
+    Orders go to <strong>+27 78 969 1760</strong>
+  </div>
+</div>
+
+</div>
+
+<script>
+  const BUSINESS_PHONE = "27789691760"; // WhatsApp number
   const cart = {};
 
-  function updateQty(name, price, delta) {
+  function updateQty(name, price, change) {
     if (!cart[name]) cart[name] = { price, qty: 0 };
-    cart[name].qty = Math.max(0, cart[name].qty + delta);
-
+    cart[name].qty = Math.max(0, cart[name].qty + change);
     if (cart[name].qty === 0) delete cart[name];
-
-    // Update qty display
-    const qtyEl = document.getElementById(`qty-${name}`);
-    if (qtyEl) qtyEl.textContent = cart[name] ? cart[name].qty : 0;
-
+    document.getElementById(`qty-${name}`).innerText = cart[name]?.qty || 0;
     renderSummary();
   }
 
-  function toggleDeliveryFields() {
-    const orderType = document.getElementById("orderType").value;
-    document.getElementById("deliveryFields").style.display =
-      orderType === "Delivery" ? "block" : "none";
-    renderSummary();
-  }
-
-  function getDeliveryFee() {
-    const orderType = document.getElementById("orderType").value;
-    if (orderType !== "Delivery") return 0;
-    const v = Number(document.getElementById("deliveryFee").value || 0);
-    return isFinite(v) && v >= 0 ? v : 0;
-  }
-
-  function calcSubtotal() {
-    let subtotal = 0;
-    Object.keys(cart).forEach((k) => {
-      subtotal += cart[k].price * cart[k].qty;
-    });
-    return subtotal;
+  function toggleDelivery() {
+    document.getElementById("address").style.display =
+      document.getElementById("orderType").value === "Delivery" ? "block" : "none";
   }
 
   function renderSummary() {
-    const summaryEl = document.getElementById("summary");
-    const totalsEl = document.getElementById("totals");
-
-    const items = Object.keys(cart);
-    if (items.length === 0) {
-      summaryEl.innerHTML = `<div class="empty">No items yet. Tap + to add.</div>`;
-      totalsEl.innerHTML = "";
-      return;
-    }
-
-    // Build items list
     let html = "";
-    items.forEach((name) => {
-      const { price, qty } = cart[name];
-      const lineTotal = price * qty;
-      html += `<div>• <b>${qty}×</b> ${name} — R${lineTotal}</div>`;
+    let total = 0;
+    Object.keys(cart).forEach(item => {
+      const line = cart[item].price * cart[item].qty;
+      total += line;
+      html += `${cart[item].qty} × ${item} – R${line}<br>`;
     });
-    summaryEl.innerHTML = html;
-
-    // Totals
-    const subtotal = calcSubtotal();
-    const deliveryFee = getDeliveryFee();
-    const grandTotal = subtotal + deliveryFee;
-
-    const orderType = document.getElementById("orderType").value;
-
-    totalsEl.innerHTML = `
-      <div class="line"><span>Subtotal</span><span>R${subtotal}</span></div>
-      <div class="line"><span>Delivery Fee</span><span>${orderType === "Delivery" ? "R" + deliveryFee : "R0"}</span></div>
-      <div class="line grand"><span>Total</span><span>R${grandTotal}</span></div>
-    `;
+    document.getElementById("summary").innerHTML = html || "<em>No items added</em>";
+    document.getElementById("total").innerText = total ? `Total: R${total}` : "";
   }
 
-  function placeOrderWhatsApp() {
-    const items = Object.keys(cart);
-    if (items.length === 0) {
+  function sendWhatsApp() {
+    if (Object.keys(cart).length === 0) {
       alert("Please add items to your order.");
       return;
     }
 
-    const name = document.getElementById("name").value.trim();
-    const custPhone = document.getElementById("phone").value.trim();
-    const orderType = document.getElementById("orderType").value;
-    const address = document.getElementById("address").value.trim();
-    const notes = document.getElementById("notes").value.trim();
+    const name = document.getElementById("name").value || "Not provided";
+    const phone = document.getElementById("phone").value;
+    const type = document.getElementById("orderType").value;
+    const address = document.getElementById("address").value;
+    const notes = document.getElementById("notes").value;
 
-    if (orderType === "Delivery" && !address) {
+    if (type === "Delivery" && !address) {
       alert("Please enter a delivery address.");
       return;
     }
 
-    const subtotal = calcSubtotal();
-    const deliveryFee = getDeliveryFee();
-    const total = subtotal + deliveryFee;
+    // South Africa date & time
+    const now = new Date();
+    const date = now.toLocaleDateString("en-ZA");
+    const time = now.toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" });
 
-    // Build WhatsApp message (URL-encoded safely)
-    const lines = [];
-    lines.push("*New Takeaway Order*");
-    lines.push(`Name: ${name || "Not provided"}`);
-    if (custPhone) lines.push(`Customer Phone: ${custPhone}`);
-    lines.push(`Order Type: ${orderType}`);
-    if (orderType === "Delivery") {
-      lines.push(`Address: ${address}`);
-      lines.push(`Delivery Fee: R${deliveryFee}`);
-    }
-    if (notes) lines.push(`Notes: ${notes}`);
+    let msg = `*New Takeaway Order*\n`;
+    msg += `Date: ${date}\nTime: ${time}\n\n`;
+    msg += `Name: ${name}\n`;
+    if (phone) msg += `Customer Phone: ${phone}\n`;
+    msg += `Order Type: ${type}\n`;
+    if (type === "Delivery") msg += `Address: ${address}\n`;
+    if (notes) msg += `Notes: ${notes}\n`;
 
-    lines.push("");
-    lines.push("*Order Details:*");
-    items.forEach((n) => {
-      const { price, qty } = cart[n];
-      lines.push(`- ${qty} x ${n} (R${price * qty})`);
+    msg += `\n*Order Details:*\n`;
+    let total = 0;
+    Object.keys(cart).forEach(item => {
+      const line = cart[item].price * cart[item].qty;
+      total += line;
+      msg += `- ${cart[item].qty} x ${item} (R${line})\n`;
     });
 
-    lines.push("");
-    lines.push(`Subtotal: R${subtotal}`);
-    lines.push(`Total: R${total}`);
+    msg += `\nTotal: R${total}`;
 
-    const message = encodeURIComponent(lines.join("\n"));
-    const url = `https://wa.me/${BUSINESS_PHONE}?text=${message}`;
-
-    // Same-tab redirect to avoid popup blockers
+    const url = `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(msg)}`;
     window.location.href = url;
   }
 
-  function resetOrder() {
-    // Clear cart object
-    Object.keys(cart).forEach((k) => delete cart[k]);
-
-    // Reset qty displays
-    document.getElementById("qty-Wings (6 pcs)").textContent = "0";
-    document.getElementById("qty-Chips (Medium)").textContent = "0";
-    document.getElementById("qty-Beef Burger").textContent = "0";
-    document.getElementById("qty-Soft Drink").textContent = "0";
-
-    // Optional: keep customer fields, or clear them:
-    // document.getElementById("name").value = "";
-    // document.getElementById("phone").value = "";
-    // document.getElementById("address").value = "";
-    // document.getElementById("notes").value = "";
-
-    renderSummary();
-  }
-
-  // Init
-  toggleDeliveryFields();
-  renderSummary();
+  toggleDelivery();
 </script>
+
 </body>
 </html>
