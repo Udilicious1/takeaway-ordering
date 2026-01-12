@@ -159,4 +159,73 @@
 
   function toggleDelivery() {
     document.getElementById("address").style.display =
-      document.getElementById("orderType").value === "De
+      document.getElementById("orderType").value === "Delivery" ? "block" : "none";
+  }
+
+  function renderSummary() {
+    let html = "";
+    let total = 0;
+    Object.keys(cart).forEach(item => {
+      const line = cart[item].price * cart[item].qty;
+      total += line;
+      html += `${cart[item].qty} × ${item} – R${line}<br>`;
+    });
+    document.getElementById("summary").innerHTML = html || "<em>No items added</em>";
+    document.getElementById("total").innerText = total ? `Total: R${total}` : "";
+  }
+
+  function generateOrderId(now) {
+    const pad = n => n.toString().padStart(2, "0");
+    return `ORD-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  }
+
+  function sendWhatsApp() {
+    if (Object.keys(cart).length === 0) {
+      alert("Please add items to your order.");
+      return;
+    }
+
+    const name = document.getElementById("name").value || "Not provided";
+    const phone = document.getElementById("phone").value;
+    const type = document.getElementById("orderType").value;
+    const address = document.getElementById("address").value;
+    const notes = document.getElementById("notes").value;
+
+    if (type === "Delivery" && !address) {
+      alert("Please enter a delivery address.");
+      return;
+    }
+
+    const now = new Date();
+    const date = now.toLocaleDateString("en-ZA");
+    const time = now.toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" });
+    const orderId = generateOrderId(now);
+
+    let msg = `*New Takeaway Order*\n`;
+    msg += `Order ID: ${orderId}\n`;
+    msg += `Date: ${date}\nTime: ${time}\n\n`;
+    msg += `Name: ${name}\n`;
+    if (phone) msg += `Customer Phone: ${phone}\n`;
+    msg += `Order Type: ${type}\n`;
+    if (type === "Delivery") msg += `Address: ${address}\n`;
+    if (notes) msg += `Notes: ${notes}\n`;
+
+    msg += `\n*Order Details:*\n`;
+    let total = 0;
+    Object.keys(cart).forEach(item => {
+      const line = cart[item].price * cart[item].qty;
+      total += line;
+      msg += `- ${cart[item].qty} x ${item} (R${line})\n`;
+    });
+
+    msg += `\nTotal: R${total}`;
+
+    const url = `https://wa.me/${BUSINESS_PHONE}?text=${encodeURIComponent(msg)}`;
+    window.location.href = url;
+  }
+
+  toggleDelivery();
+</script>
+
+</body>
+</html>
