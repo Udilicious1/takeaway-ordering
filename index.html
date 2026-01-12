@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Takeaway Ordering</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: Arial, sans-serif; background: #f6f6f6; margin: 0; padding: 20px; }
+    h1 { text-align: center; }
+    .menu-item {
+      background: #fff; padding: 15px; margin-bottom: 10px; border-radius: 6px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .menu-item button { padding: 6px 10px; cursor: pointer; }
+    .section { background: #fff; padding: 15px; margin-top: 20px; border-radius: 6px; }
+    input, select { width: 100%; padding: 8px; margin-top: 6px; margin-bottom: 12px; }
+    .checkout {
+      background: #25D366; color: #fff; border: none; padding: 15px; width: 100%;
+      font-size: 16px; border-radius: 6px; cursor: pointer;
+    }
+    .total { font-weight: bold; margin-top: 10px; }
+    .qty { display: flex; gap: 8px; align-items: center; }
+    .qty button { width: 32px; height: 32px; }
+  </style>
+</head>
+
+<body>
+
+<h1>🍔 Takeaway Orders</h1>
+
+<!-- MENU -->
+<div class="menu-item">
+  <span>Wings (6 pcs) — R45</span>
+  <div class="qty">
+    <button onclick="removeItem('Wings (6 pcs)', 45)">−</button>
+    <button onclick="addItem('Wings (6 pcs)', 45)">+</button>
+  </div>
+</div>
+
+<div class="menu-item">
+  <span>Chips (Medium) — R30</span>
+  <div class="qty">
+    <button onclick="removeItem('Chips (Medium)', 30)">−</button>
+    <button onclick="addItem('Chips (Medium)', 30)">+</button>
+  </div>
+</div>
+
+<div class="menu-item">
+  <span>Beef Burger — R55</span>
+  <div class="qty">
+    <button onclick="removeItem('Beef Burger', 55)">−</button>
+    <button onclick="addItem('Beef Burger', 55)">+</button>
+  </div>
+</div>
+
+<div class="menu-item">
+  <span>Soft Drink — R20</span>
+  <div class="qty">
+    <button onclick="removeItem('Soft Drink', 20)">−</button>
+    <button onclick="addItem('Soft Drink', 20)">+</button>
+  </div>
+</div>
+
+<!-- CUSTOMER DETAILS -->
+<div class="section">
+  <h3>Customer Details</h3>
+  <input type="text" id="name" placeholder="Your Name" />
+  <input type="text" id="phone" placeholder="Your Phone (optional)" />
+
+  <select id="orderType" onchange="toggleAddress()">
+    <option value="Collection">Collection</option>
+    <option value="Delivery">Delivery</option>
+  </select>
+
+  <input type="text" id="address" placeholder="Delivery Address (required for delivery)" style="display:none;" />
+  <input type="text" id="notes" placeholder="Notes (e.g., extra sauce, no spice, etc.)" />
+</div>
+
+<!-- SUMMARY -->
+<div class="section">
+  <h3>Order Summary</h3>
+  <div id="summary"></div>
+  <div class="total" id="total"></div>
+</div>
+
+<button class="checkout" onclick="sendWhatsApp()">Place Order via WhatsApp</button>
+
+<script>
+  const cart = {}; // { itemName: { price, qty } }
+  let total = 0;
+
+  function addItem(name, price) {
+    if (!cart[name]) cart[name] = { price, qty: 0 };
+    cart[name].qty += 1;
+    total += price;
+    renderSummary();
+  }
+
+  function removeItem(name, price) {
+    if (!cart[name] || cart[name].qty === 0) return;
+    cart[name].qty -= 1;
+    total -= price;
+    if (cart[name].qty === 0) delete cart[name];
+    renderSummary();
+  }
+
+  function renderSummary() {
+    const summary = document.getElementById('summary');
+    summary.innerHTML = '';
+
+    const items = Object.keys(cart);
+    if (items.length === 0) {
+      summary.innerHTML = '<em>No items yet. Tap + to add.</em>';
+      document.getElementById('total').innerText = '';
+      return;
+    }
+
+    items.forEach(name => {
+      const { price, qty } = cart[name];
+      summary.innerHTML += `${qty} × ${name} — R${price * qty}<br>`;
+    });
+
+    document.getElementById('total').innerText = 'Total: R' + total;
+  }
+
+  function toggleAddress() {
+    const orderType = document.getElementById('orderType').value;
+    document.getElementById('address').style.display = orderType === 'Delivery' ? 'block' : 'none';
+  }
+
+  function sendWhatsApp() {
+    const items = Object.keys(cart);
+    if (items.length === 0) { alert('Please add items to your order.'); return; }
+
+    const name = document.getElementById('name').value.trim();
+    const custPhone = document.getElementById('phone').value.trim();
+    const orderType = document.getElementById('orderType').value;
+    const address = document.getElementById('address').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+
+    if (orderType === 'Delivery' && !address) {
+      alert('Please enter a delivery address.');
+      return;
+    }
+
+    let message = `*New Takeaway Order*%0A`;
+    message += `Name: ${name || 'N
